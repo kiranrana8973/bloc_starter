@@ -1,18 +1,17 @@
-part of 'student_bloc.dart';
+import 'package:bloc_test/model/student_model.dart';
+import 'package:flutter/foundation.dart';
 
 @immutable
 sealed class StudentEvent {}
 
-class AddStudentEvent extends StudentEvent {
+class StudentAddEvent extends StudentEvent {
   final StudentModel studentModel;
 
-  AddStudentEvent(this.studentModel);
+  StudentAddEvent(this.studentModel);
 }
 
-class DeleteStudentEvent extends StudentEvent {
+class StudentDeleteEvent extends StudentEvent {
   final int index;
 
-  DeleteStudentEvent(this.index);
+  StudentDeleteEvent(this.index);
 }
-
-

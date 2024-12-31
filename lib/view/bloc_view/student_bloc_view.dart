@@ -1,4 +1,6 @@
 import 'package:bloc_test/bloc/student_bloc.dart';
+import 'package:bloc_test/bloc/student_event.dart';
+import 'package:bloc_test/bloc/student_state.dart';
 import 'package:bloc_test/model/student_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -79,38 +81,39 @@ class StudentBlocView extends StatelessWidget {
                     );
 
                     // Call student bloc
-                    context
-                        .read<StudentBloc>()
-                        .add(AddStudentEvent(student));
+                    context.read<StudentBloc>().add(
+                          StudentAddEvent(student),
+                        );
                   }
                 },
                 child: const Text('Submit'),
               ),
               SizedBox(height: 8),
-              BlocBuilder<StudentBloc, StudentBlocState>(
+              BlocBuilder<StudentBloc, StudentState>(
                 builder: (context, state) {
-                  if (state.isLoading) {
+                  if (state.students.isEmpty) {
+                    return const Text('No student data');
+                  } else if (state.isLoading) {
                     return const CircularProgressIndicator();
-                  } else if (state.students.isEmpty) {
-                    return const Text('No students added yet');
                   } else {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: state.students.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(state.students[index].name),
-                          subtitle: Text(state.students[index].age.toString()),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () {
-                              context
-                                  .read<StudentBloc>()
-                                  .add(DeleteStudentEvent(index));
-                            },
-                          ),
-                        );
-                      },
+                    return Expanded(
+                      child: ListView.builder(
+                        itemCount: state.students.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            title: Text(state.students[index].name),
+                            subtitle: Text(state.students[index].address),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () {
+                                context
+                                    .read<StudentBloc>()
+                                    .add(StudentDeleteEvent(index));
+                              },
+                            ),
+                          );
+                        },
+                      ),
                     );
                   }
                 },
